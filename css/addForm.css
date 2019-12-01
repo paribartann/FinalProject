@@ -1,0 +1,26 @@
+form {
+    padding: 10px;
+}
+
+input {
+    padding: 5px;
+    margin: 5px;
+}
+
+#formContainer {
+    width: 40%;
+}
+
+.theLabels {
+    width: 30%;
+    float: left;
+}
+
+#formC {
+    width: 100%;
+}
+
+input[type=submit] {
+    text-align: center;
+    width: 331px;
+}
