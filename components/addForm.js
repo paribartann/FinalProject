@@ -15,7 +15,6 @@ import { Container, Item, Form, Input, Button, Label } from "native-base";
 import { Dropdown } from "react-native-material-dropdown";
 
 let AddForm = ({ dispatch, addCategory }) => {
-  
   const [newCategory, setNewCategory] = useState("");
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
@@ -34,7 +33,9 @@ let AddForm = ({ dispatch, addCategory }) => {
       <ScrollView>
         <Container style={styles.container}>
           <View>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+            <Text
+              style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}
+            >
               ADD CATEGORY
             </Text>
           </View>
@@ -46,7 +47,7 @@ let AddForm = ({ dispatch, addCategory }) => {
                 onChangeText={text => {
                   setNewCategory(text);
                 }}
-                value={newCategory}
+                value = {newCategory}
               />
             </Item>
 
@@ -56,9 +57,13 @@ let AddForm = ({ dispatch, addCategory }) => {
               success
               style={{ marginTop: 20, backgroundColor: "#ffd147" }}
               onPress={() => {
-                dispatch(addCategories({ value: newCategory }));
-                setNewCategory("");
-                Alert.alert("New category has been added!");
+                if (newCategory !== "") {
+                  dispatch(addCategories({ value: newCategory }));
+                  setNewCategory("");
+                  Alert.alert("New category has been added!");
+                } else {
+                  Alert.alert("You cannot submit empty form!");
+                }
               }}
             >
               <Text>Add Category</Text>
@@ -69,7 +74,9 @@ let AddForm = ({ dispatch, addCategory }) => {
 
           {/*  ADD PRODUCT STARTS HERE!   */}
           <View>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+            <Text
+              style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}
+            >
               ADD PRODUCT
             </Text>
           </View>
@@ -122,11 +129,18 @@ let AddForm = ({ dispatch, addCategory }) => {
                   stocked: inStock,
                   name: productName
                 };
+                if(category !== "" && price !== "" && productName !== "")
+                { 
                 dispatch(addItems(obj));
                 setProductName("");
                 setPrice("");
                 setInStock(false);
                 Alert.alert("Your product has been added!");
+                }
+                else
+                {
+                  Alert.alert("All items must be filled in!");
+                }
               }}
             >
               <Text>Add Product</Text>

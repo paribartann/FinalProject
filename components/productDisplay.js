@@ -45,7 +45,9 @@ class ProductDisplay extends Component {
       const name = product.stocked ? (
         <Text style={{ textAlign: "center" }}>{product.name}</Text>
       ) : (
-        <Text style={{ color: "red", textAlign: "center" }}>{product.name}</Text>
+        <Text style={{ color: "red", textAlign: "center" }}>
+          {product.name}
+        </Text>
       );
 
       rowsItem.push(name);
@@ -78,8 +80,8 @@ class ProductDisplay extends Component {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: "#fff" },
-  head: { height: 40, backgroundColor: "#f1f8ff"},
-  text: { margin: 6 }
+  head: { height: 40, backgroundColor: "#f1f8ff" },
+  text: { margin: 6, textAlign:"center" }
 });
 
 function mapStateToProps(state) {
