@@ -1,87 +1,160 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import addItems from "../actions/add_action";
+import addCategories from "../actions/addCategory_action";
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  Alert,
+  View,
+  ScrollView
+} from "react-native";
+import { CheckBox } from "react-native-elements";
+import { Container, Item, Form, Input, Button, Label } from "native-base";
+import { Dropdown } from "react-native-material-dropdown";
 
-import "../css/addForm.css";
+let AddForm = ({ dispatch, addCategory }) => {
+  
+  const [newCategory, setNewCategory] = useState("");
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [inStock, setInStock] = useState(false);
 
-let AddForm = ({ dispatch }) => {
-  let name, category, price, inStock;
+  console.log("ADD", addCategory);
 
   return (
-    <div id="formContainer">
-      <h3>Please add the details</h3>
-      <form
-        id="formC"
-        onSubmit={e => {
-          e.preventDefault();
-          var obj = {
-            category: category.value,
-            price: price.value,
-            stocked: inStock,
-            name: name.value
-          };
-          dispatch(addItems(obj));
-          category.value = "";
-          price.value = "";
-          name.value = "";
-        }}
-      >
-        <div>
-          <label className="theLabels"> Product Name: </label>
-          <input
-            placeholder="PRODUCT NAME"
-            ref={node => {
-              name = node;
-            }}
-          />
-        </div>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      enabled
+      behavior="padding"
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView>
+        <Container style={styles.container}>
+          <View>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+              ADD CATEGORY
+            </Text>
+          </View>
+          <Form>
+            <Item floatingLabel>
+              <Label>New Category </Label>
+              <Input
+                placeholder="Enter the category name"
+                onChangeText={text => {
+                  setNewCategory(text);
+                }}
+                value={newCategory}
+              />
+            </Item>
 
-        <div>
-          <label className="theLabels"> Product Category: </label>
-          <input
-            placeholder="CATEGORY NAME"
-            ref={node => {
-              category = node;
-            }}
-          />
-        </div>
+            <Button
+              full
+              rounded
+              success
+              style={{ marginTop: 20, backgroundColor: "#ffd147" }}
+              onPress={() => {
+                dispatch(addCategories({ value: newCategory }));
+                setNewCategory("");
+                Alert.alert("New category has been added!");
+              }}
+            >
+              <Text>Add Category</Text>
+            </Button>
+          </Form>
+          <Text>{"\n"}</Text>
+          <Text>{"\n"}</Text>
 
-        <div>
-          <label className="theLabels"> Product 's Price:</label>
-          <input
-            placeholder="PRICE"
-            ref={node => {
-              price = node;
-            }}
-          />
-        </div>
+          {/*  ADD PRODUCT STARTS HERE!   */}
+          <View>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+              ADD PRODUCT
+            </Text>
+          </View>
+          <Form style={{ padding: "3%" }}>
+            <Item floatingLabel>
+              <Label>PRODUCT NAME </Label>
+              <Input
+                placeholder="Enter the product name"
+                onChangeText={text => {
+                  setProductName(text);
+                }}
+                value={productName}
+              />
+            </Item>
 
-        <div>
-          <label className="theLabels"> In Stock: </label>
-          <input
-            type="radio"
-            id="stockChoice1"
-            name="InStock"
-            value="true"
-            onChange={ () => inStock = true}
-            checked
-          />
-          <label> Yes </label>
+            <Dropdown
+              label="Category"
+              data={addCategory}
+              onChangeText={item => setCategory(item)}
+            />
 
-          <input
-            type="radio"
-            id="stockChoice2"
-            name="InStock"
-            value="false"
-            onChange={ () => inStock = false}
-          />
-          <label> No </label>
-        </div>
-        <input type="submit" />
-      </form>
-    </div>
+            <Item floatingLabel>
+              <Label>PRICE : $</Label>
+              <Input
+                placeholder="Enter the price"
+                onChangeText={text => {
+                  setPrice(text);
+                }}
+                value={price}
+              />
+            </Item>
+
+            <Item>
+              <CheckBox
+                checked={inStock}
+                onPress={() => setInStock(!inStock)}
+              />
+              <Text>In Stock</Text>
+            </Item>
+
+            <Button
+              full
+              rounded
+              success
+              style={{ marginTop: 20, backgroundColor: "#ffd147" }}
+              onPress={() => {
+                let obj = {
+                  category: category,
+                  price: "$" + price,
+                  stocked: inStock,
+                  name: productName
+                };
+                dispatch(addItems(obj));
+                setProductName("");
+                setPrice("");
+                setInStock(false);
+                Alert.alert("Your product has been added!");
+              }}
+            >
+              <Text>Add Product</Text>
+            </Button>
+          </Form>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-AddForm = connect()(AddForm);
+function mapStateToProps(state) {
+  console.log("SearchBar state:", state);
+
+  return {
+    addCategory: state.addCategory.CATEGORY,
+    checkStock: state.checkStock.inStockOnly,
+    search: state.search.filterText
+  };
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "papayawhip",
+    justifyContent: "center"
+  }
+});
+
+AddForm = connect(mapStateToProps)(AddForm);
 export default AddForm;

@@ -1,39 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import searchProduct from "../actions/search_product";
 import inStockCheck from "../actions/inStockCheck";
+import { SearchBar } from "react-native-elements";
+import {
+  KeyboardAvoidingView,
+  Text,
+  View
+} from "react-native";
+import { CheckBox } from 'react-native-elements'
+import {
+  ListItem
+} from "native-base";
+let Searchbar = ({ dispatch, checkStock }) => {
+  console.log("CHECKSTOCK === ", checkStock);
+  const [query, setQuery] = useState("");
 
-let Searchbar = ({ dispatch }) => {
   return (
-    <div>
-      <form>
-        <div>
-          <label className="theLabels"> Search Product </label>
-          <input
-            type="text"
-            placeholder="Search..."
-            onChange={e => {
-              e.preventDefault();
-              dispatch(searchProduct(e.target.value));
-            }}
+    <KeyboardAvoidingView>
+      <SearchBar
+        placeholder="Enter the product Name"
+        onChangeText={text => {
+          setQuery(text);
+          dispatch(searchProduct(text));
+        }}
+        inputStyle={{ color: "white" }}
+        value={query}
+      />
+      <ListItem>
+          <CheckBox
+            checked={checkStock}
+            onPress={() => dispatch(inStockCheck(!checkStock))}
           />
-        </div>
-        <p>
-          <input
-            type="checkbox"
-            id="stockCheck"
-            onChange={() => {
-              if (document.getElementById("stockCheck").checked) {
-                dispatch(inStockCheck(true));
-              } else {
-                dispatch(inStockCheck(false));
-              }
-            }}
-          />{" "}
-          Only show products in stock
-        </p>
-      </form>
-    </div>
+          <Text>Only show products in stock</Text>
+      </ListItem>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -43,8 +44,11 @@ function mapStateToProps(state) {
   return {
     checkStock: state.checkStock.inStockOnly,
     search: state.search.filterText
+    
   };
 }
 
 Searchbar = connect(mapStateToProps)(Searchbar);
 export default Searchbar;
+
+
